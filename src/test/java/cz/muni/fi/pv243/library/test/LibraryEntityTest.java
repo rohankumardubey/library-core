@@ -5,7 +5,7 @@
 package cz.muni.fi.pv243.library.test;
 
 import cz.muni.fi.pv243.library.model.Book;
-import cz.muni.fi.pv243.library.service.BookManager;
+import cz.muni.fi.pv243.library.model.dao.BookManager;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;

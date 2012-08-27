@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package cz.muni.fi.pv243.library.service;
+package cz.muni.fi.pv243.library.model.dao;
 
 import cz.muni.fi.pv243.library.model.LibraryUser;
 import java.util.List;
