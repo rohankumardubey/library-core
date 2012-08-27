@@ -21,12 +21,12 @@ public class Book implements Serializable {
     
     @Column
     @NotEmpty
-    @Size(max = 70, message = "Title must be at most 70 characters long.")
+    @Size(max = 150, message = "Title must be at most 150 characters long.")
     private String title;
     
     @Column
-    @Size(min = 3, max = 50, message = "Author must be between 3 and 50 characters.")
-    @Pattern(regexp = "[A-Za-z ]*", message = "Author must contain only characters and spaces")
+    @Size(min = 3, max = 75, message = "Author must be between 3 and 75 characters.")
+    @Pattern(regexp = "[A-Ža-ž ]*", message = "Author must contain only characters and spaces")
     private String author;
     
     @PastYear()
@@ -37,6 +37,11 @@ public class Book implements Serializable {
     @NotEmpty
 //    @Pattern(regexp = "ISBN(?:-13)?:?\\x20*(?=.{17}$)97(?:8|9)([ -])\\d{1,5}\\1\\d{1,7}\\1\\d{1,6}\\1\\d$", message = "It has to be well-formed ISBN.")
     private String isbn;
+    
+//    @OneToMany
+//    private LibraryUser user;
+    
+    private boolean loan;
 
     public String getAuthor() {
         return author;
@@ -76,6 +81,14 @@ public class Book implements Serializable {
 
     public void setYear(int year) {
         this.year = year;
+    }
+    
+    public boolean isLoan() {
+        return loan;
+    }
+
+    public void setLoan(boolean isLoan) {
+        this.loan = isLoan;
     }
 
     @Override

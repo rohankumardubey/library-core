@@ -5,73 +5,166 @@
 
     <groupId>cz.muni.fi.pv243</groupId>
     <artifactId>library</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>war</packaging>
-
     <name>library</name>
 
     <properties>
-        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jboss.bom.version>1.0.0.M6</jboss.bom.version>
+        <javaee6.web.spec.version>2.0.0.Final</javaee6.web.spec.version>
+        <jbossas.version>7.1.1.Final</jbossas.version>
+        <seam.version>3.1.0.Final</seam.version>
+        <jbossas.dir>/home/vramik/jbossas</jbossas.dir>
+<!--        <jbossas.dir>D:</jbossas.dir>-->
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- JBoss distributes a complete set of Java EE 6 APIs including 
+            a Bill of Materials (BOM). A BOM specifies the versions of a "stack" (or 
+            a collection) of artifacts. We use this here so that we always get the correct 
+            versions of artifacts. Here we use the jboss-javaee-web-6.0 stack (you can 
+            read this as the JBoss stack of the Java EE Web Profile 6 APIs) -->
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-tools</artifactId>
+                <version>${jboss.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
+                <version>${jboss.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.jboss.spec</groupId>
+                <artifactId>jboss-javaee-web-6.0</artifactId>
+                <version>${javaee6.web.spec.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        
+            <dependency>
+                <groupId>org.jboss.seam</groupId>
+                <artifactId>seam-bom</artifactId>
+                <version>${seam.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        
+        </dependencies>
+    </dependencyManagement>
+   
     <dependencies>
+        <!-- First declare the APIs we depend on and need for compilation. 
+        All of them are provided by JBoss AS 7 -->
         <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>eclipselink</artifactId>
-            <version>2.3.0</version>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
         </dependency>
+      
         <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>javax.persistence</artifactId>
-            <version>2.0.3</version>
+            <groupId>org.jboss.spec.javax.faces</groupId>
+            <artifactId>jboss-jsf-api_2.0_spec</artifactId>
+            <scope>provided</scope>
         </dependency>
+
         <dependency>
-            <groupId>org.picketlink.idm</groupId>
-            <artifactId>picketlink-idm-api</artifactId>
-            <version>1.5.0.Alpha02</version>
-            <type>jar</type>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.1_spec</artifactId>
+            <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.0.0.Alpha1</version>
-            <type>jar</type>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+<!--        <dependency>
+            <groupId>org.jboss.solder</groupId>
+            <artifactId>solder-impl</artifactId>
+        </dependency> 
+ 
+        <dependency>
+            <groupId>org.jboss.solder</groupId>
+            <artifactId>solder-tooling</artifactId>
+            <scope>provided</scope>
+        </dependency> -->
+       
+        <dependency>
+            <groupId>org.jboss.seam.faces</groupId>
+            <artifactId>seam-faces</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.seam.international</groupId>
+            <artifactId>seam-international</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.seam.persistence</groupId>
+            <artifactId>seam-persistence</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.seam.security</groupId>
-            <artifactId>seam-security-api</artifactId>
-            <version>3.2.0-SNAPSHOT</version>
-            <type>jar</type>
+            <artifactId>seam-security</artifactId>
+            <scope>compile</scope>
+        </dependency>     
+            
+        <dependency>
+            <groupId>com.ocpsoft</groupId>
+            <artifactId>prettyfaces-jsf2</artifactId>
         </dependency>
+      
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
             <scope>test</scope>
-            <type>jar</type>
         </dependency>
+      
         <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>10.9.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derbyclient</artifactId>
-            <version>10.7.1.1</version>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
             <scope>test</scope>
-            <type>jar</type>
         </dependency>
+
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-web-api</artifactId>
-            <version>6.0</version>
-            <scope>provided</scope>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -80,9 +173,6 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
-                    <compilerArguments>
-                        <endorseddirs>${endorsed.dir}</endorseddirs>
-                    </compilerArguments>
                 </configuration>
             </plugin>
             <plugin>
@@ -92,31 +182,6 @@
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${endorsed.dir}</outputDirectory>
-                            <silent>true</silent>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>javax</groupId>
-                                    <artifactId>javaee-endorsed-api</artifactId>
-                                    <version>6.0</version>
-                                    <type>jar</type>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -129,20 +194,157 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <copy file="${basedir}/target/library-${project.version}.war" todir="/home/vramik/jbossas/jboss-as-7.1.1.Final/standalone/deployments" />
+                                <copy file="${basedir}/target/library.war" 
+                                      todir="${jbossas.dir}/jboss-as-7.1.1.Final/standalone/deployments" />
                             </tasks>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+        <!-- The JBoss AS plugin deploys your war to a local JBoss AS container -->
+        <!-- To use, set the JBOSS_HOME environment variable and run: mvn 
+            package jboss-as:deploy -->
+            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <version>${jbossas.version}</version>
+            </plugin>
         </plugins>
     </build>
+    
+    <profiles>
+        <profile>
+            <!-- The default profile skips all tests, though you can tune it to run 
+        				just unit tests based on a custom pattern -->
+            <!-- Seperate profiles are provided for running all tests, including Arquillian 
+        				tests that execute in the specified container -->
+            <id>default</id>
+<!--            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>-->
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.4.3</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- We add the JBoss repository as we need the JBoss AS connectors 
+            for Arquillian -->
+            <repositories>
+                <!-- The JBoss Community public repository is a composite repository 
+                of several major repositories -->
+                <!-- see http://community.jboss.org/wiki/MavenGettingStarted-Users -->
+                <repository>
+                    <id>jboss-public-repository</id>
+                    <name>JBoss Repository</name>
+                    <url>http://repository.jboss.org/nexus/content/groups/public</url>
+                    <!-- These optional flags are designed to speed up your builds 
+                    by reducing remote server calls -->
+                    <releases>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>jboss-public-repository</id>
+                    <name>JBoss Repository</name>
+                    <url>http://repository.jboss.org/nexus/content/groups/public</url>
+                    <releases>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+
+            <!-- An optional Arquillian testing profile that executes tests 
+            in your JBoss AS instance -->
+            <!-- This profile will start a new JBoss AS instance, and execute 
+            the test, shutting it down when done -->
+            <!-- Run with: mvn clean test -Parq-jbossas-managed -->
+            <id>arq-jbossas-managed</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.as</groupId>
+                    <artifactId>jboss-as-arquillian-container-managed</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <!-- We add the JBoss repository as we need the JBoss AS connectors 
+            for Arquillian -->
+            <repositories>
+                <!-- The JBoss Community public repository is a composite repository 
+                of several major repositories -->
+                <!-- see http://community.jboss.org/wiki/MavenGettingStarted-Users -->
+                <repository>
+                    <id>jboss-public-repository</id>
+                    <name>JBoss Repository</name>
+                    <url>http://repository.jboss.org/nexus/content/groups/public</url>
+                    <!-- These optional flags are designed to speed up your builds 
+                    by reducing remote server calls -->
+                    <releases>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>jboss-public-repository</id>
+                    <name>JBoss Repository</name>
+                    <url>http://repository.jboss.org/nexus/content/groups/public</url>
+                    <releases>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+
+            <!-- An optional Arquillian testing profile that executes tests 
+            in a remote JBoss AS instance -->
+            <!-- Run with: mvn clean test -Parq-jbossas-remote -->
+            <id>arq-jbossas-remote</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.as</groupId>
+                    <artifactId>jboss-as-arquillian-container-remote</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
     <repositories>
+        <!-- The JBoss Community public repository is a composite repository 
+        of several major repositories -->
+        <!-- see http://community.jboss.org/wiki/MavenGettingStarted-Users -->
         <repository>
-            <url>http://download.eclipse.org/rt/eclipselink/maven.repo/</url>
-            <id>eclipselink</id>
-            <layout>default</layout>
-            <name>Repository for library Library[eclipselink]</name>
+            <id>jboss-public-repository</id>
+            <name>JBoss Repository</name>
+            <url>http://repository.jboss.org/nexus/content/groups/public</url>
+            <!-- These optional flags are designed to speed up your builds 
+            by reducing remote server calls -->
+            <releases>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 </project>

@@ -30,7 +30,7 @@ public class LibraryUser implements Serializable {
     
     @Column
     @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters.")
-    @Pattern(regexp = "[A-Za-z ]*", message = "Name must contain only characters and spaces")
+    @Pattern(regexp = "[A-Ža-ž ]*", message = "Name must contain only characters and spaces")
     private String name;
     
     @Column
@@ -38,8 +38,8 @@ public class LibraryUser implements Serializable {
     @NotEmpty
     private String password;
     
-	@NotNull
-	private Role UserRole;
+    @NotNull
+    private Role UserRole;
     
     public Long getId() {
         return id;
