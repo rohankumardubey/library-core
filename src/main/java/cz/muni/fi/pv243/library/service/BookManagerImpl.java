@@ -9,11 +9,13 @@ import cz.muni.fi.pv243.library.model.Book;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 /**
  *
@@ -70,8 +72,14 @@ public class BookManagerImpl implements BookManager {
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         }
-        return (Book) em.createQuery("SELECT b FROM Book b WHERE b.id=:id")
+        Book result = null;
+        try {
+            result = (Book) em.createQuery("SELECT b FROM Book b WHERE b.id=:id")
 				.setParameter("id", id).getSingleResult();
+        } catch (NoResultException e) {
+            //ok
+        }
+        return result;
     }
 
     private void checkBookParameters(Book book) throws IllegalArgumentException {

@@ -9,12 +9,20 @@ import cz.muni.fi.pv243.library.service.BookManager;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -24,10 +32,16 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class LibraryEntityTest {
-    
+
     @Inject
     private BookManager bookManager;
     
+    @PersistenceContext
+    private EntityManager em;
+    
+    @Inject
+    UserTransaction utx;
+
     @Deployment
     public static WebArchive getDeployment() {
         return ShrinkWrap.create(WebArchive.class)
@@ -35,7 +49,36 @@ public class LibraryEntityTest {
                 .addPackages(true, BookManager.class.getPackage(), Book.class.getPackage())
                 .addAsResource("META-INF/persistence.xml");
     }
-    
+
+    @Before
+    public void preparePersistenceTest() throws Exception {
+        clearData();
+//        insertData();
+        startTransaction();
+    }
+
+    private void clearData() throws Exception {
+        utx.begin();
+        em.joinTransaction();
+        System.out.println("Dumping old records...");
+        em.createQuery("delete from Book").executeUpdate();
+        utx.commit();
+    }
+
+    private void startTransaction() throws Exception {
+        utx.begin();
+        em.joinTransaction();
+    }
+
+    @After
+    public void commitTransaction() throws Exception {
+        try {
+            utx.commit();
+        } catch (RollbackException ex) {
+            //ok
+        }
+    }
+
     @Test
     public void testAddBook() {
         Book book = newBook("Spongebob v ráji medůz", "Sergej Vasilijevič",
@@ -48,7 +91,7 @@ public class LibraryEntityTest {
         assertEquals(book, result);
         assertTrue(book.equals(result));
     }
-    
+
     @Test
     public void testGetBookById() {
         assertNull(bookManager.getBookById((long) 23));
@@ -78,17 +121,19 @@ public class LibraryEntityTest {
         expected.add(b1);
         expected.add(b2);
         Set<Book> actual = new HashSet(bookManager.getAllBooks());
-       
+
         assertEquals(expected, actual);
 
     }
 
     @Test
-    public void testAddBookWithWrongAttributes() {
+    public void testAddBookWithWrongAttributes() throws SystemException {
         try {
             bookManager.addBook(null);
             fail();
         } catch (IllegalArgumentException ex) {
+            //OK
+        } catch (EJBTransactionRolledbackException ex) {
             //OK
         }
 
@@ -100,6 +145,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         book = newBook(null, "Sergej Vasilijevič",
@@ -108,6 +155,8 @@ public class LibraryEntityTest {
             bookManager.addBook(book);
             fail();
         } catch (IllegalArgumentException ex) {
+            //OK
+        } catch (EJBTransactionRolledbackException ex) {
             //OK
         }
 
@@ -118,6 +167,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         book = newBook("Spongebob v ráji medůz", null,
@@ -126,6 +177,8 @@ public class LibraryEntityTest {
             bookManager.addBook(book);
             fail();
         } catch (IllegalArgumentException ex) {
+            //OK
+        } catch (EJBTransactionRolledbackException ex) {
             //OK
         }
 
@@ -136,6 +189,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         book = newBook("Spongebob v ráji medůz", "Sergej Vasilijevič",
@@ -144,6 +199,8 @@ public class LibraryEntityTest {
             bookManager.addBook(book);
             fail();
         } catch (IllegalArgumentException ex) {
+            //OK
+        } catch (EJBTransactionRolledbackException ex) {
             //OK
         }
 
@@ -154,6 +211,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         book = newBook("Spongebob v ráji medůz", "Sergej Vasilijevič",
@@ -162,6 +221,8 @@ public class LibraryEntityTest {
             bookManager.addBook(book);
             fail();
         } catch (IllegalArgumentException ex) {
+            //OK
+        } catch (EJBTransactionRolledbackException ex) {
             //OK
         }
 
@@ -172,6 +233,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         book = newBook("Spongebob v ráji medůz", "Sergej Vasilijevič",
@@ -181,53 +244,9 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
-
-        // these should be ok
-        book = newBook("Spongebob v ráji medůz", "Sergej Vasilijevič",
-                0, "957-70-4708-465-9");
-        bookManager.addBook(book);
-        Book result = bookManager.getBookById(book.getId());
-        assertNotNull(result);
-
-        book = newBook("Spongebob v ráji medůz", "Sergej Vasilijevič",
-                -287, "957-70-4708-465-9");
-        bookManager.addBook(book);
-        result = bookManager.getBookById(book.getId());
-        assertNotNull(result);
-
-        book = newBook("0", "Sergej Vasilijevič",
-                2003, "957-70-4708-465-9");
-        bookManager.addBook(book);
-        result = bookManager.getBookById(book.getId());
-        assertNotNull(result);
-
-        book = newBook("Abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd.", "Sergej "
-                    + "Vasilijevič", 2003, "957-70-4708-465-9");
-        bookManager.addBook(book);
-        result = bookManager.getBookById(book.getId());
-        assertNotNull(result);
-
-        book = newBook("Spongebob v ráji medůz", "Omar",
-                2003, "957-70-4708-465-9");
-        bookManager.addBook(book);
-        result = bookManager.getBookById(book.getId());
-        assertNotNull(result);
-
-        book = newBook("Spongebob v ráji medůz", "Efgh efgh efgh efgh efgh "
-                + "efgh efgh efgh efgh efgh efgh efgh efgh efgh efgh.", 2003,
-                "957-70-4708-465-9");
-        bookManager.addBook(book);
-        result = bookManager.getBookById(book.getId());
-        assertNotNull(result);
-
-        book = newBook("Spongebob v ráji medůz", "Sergej Vasilijevič",
-                2003, "60-205-0107-8");
-        bookManager.addBook(book);
-        result = bookManager.getBookById(book.getId());
-        assertNotNull(result);
     }
 
     @Test
@@ -242,12 +261,12 @@ public class LibraryEntityTest {
 
         book = bookManager.getBookById(bookId);
         book.setTitle("Abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd."); // length = 150
+                + "abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
+                + "abcd abcd abcd abcd abcd abcd abcd abcd abcd "); // length = 150
         bookManager.updateBook(book);
         assertEquals("Abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd.", book.getTitle());
+                + "abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
+                + "abcd abcd abcd abcd abcd abcd abcd abcd abcd ", book.getTitle());
         assertEquals("Sergej Vasilijevič", book.getAuthor());
         assertEquals(2003, book.getYear());
         assertEquals("60-205-0107-8", book.getIsbn());
@@ -255,13 +274,13 @@ public class LibraryEntityTest {
 
         book = bookManager.getBookById(bookId);
         book.setAuthor("Efgh efgh efgh efgh efgh efgh efgh efgh efgh efgh "
-                    + "efgh efgh efgh efgh efgh."); // length = 75
+                + "efgh efgh efgh efgh efgh "); // length = 75
         bookManager.updateBook(book);
         assertEquals("Abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd.", book.getTitle());
+                + "abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
+                + "abcd abcd abcd abcd abcd abcd abcd abcd abcd ", book.getTitle());
         assertEquals("Efgh efgh efgh efgh efgh efgh efgh efgh efgh efgh "
-                    + "efgh efgh efgh efgh efgh.", book.getAuthor());
+                + "efgh efgh efgh efgh efgh ", book.getAuthor());
         assertEquals(2003, book.getYear());
         assertEquals("60-205-0107-8", book.getIsbn());
         assertEquals(false, book.isLoan());
@@ -270,10 +289,10 @@ public class LibraryEntityTest {
         book.setYear(-28);
         bookManager.updateBook(book);
         assertEquals("Abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd.", book.getTitle());
+                + "abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
+                + "abcd abcd abcd abcd abcd abcd abcd abcd abcd ", book.getTitle());
         assertEquals("Efgh efgh efgh efgh efgh efgh efgh efgh efgh efgh "
-                    + "efgh efgh efgh efgh efgh.", book.getAuthor());
+                + "efgh efgh efgh efgh efgh ", book.getAuthor());
         assertEquals(-28, book.getYear());
         assertEquals("60-205-0107-8", book.getIsbn());
         assertEquals(false, book.isLoan());
@@ -282,10 +301,10 @@ public class LibraryEntityTest {
         book.setIsbn("80-205-0107-7");
         bookManager.updateBook(book);
         assertEquals("Abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd.", book.getTitle());
+                + "abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
+                + "abcd abcd abcd abcd abcd abcd abcd abcd abcd ", book.getTitle());
         assertEquals("Efgh efgh efgh efgh efgh efgh efgh efgh efgh efgh "
-                    + "efgh efgh efgh efgh efgh.", book.getAuthor());
+                + "efgh efgh efgh efgh efgh ", book.getAuthor());
         assertEquals(-28, book.getYear());
         assertEquals("80-205-0107-7", book.getIsbn());
         assertEquals(false, book.isLoan());
@@ -294,10 +313,10 @@ public class LibraryEntityTest {
         book.setLoan(true);
         bookManager.updateBook(book);
         assertEquals("Abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                    + "abcd abcd abcd abcd abcd abcd abcd abcd abcd.", book.getTitle());
+                + "abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd abcd "
+                + "abcd abcd abcd abcd abcd abcd abcd abcd abcd ", book.getTitle());
         assertEquals("Efgh efgh efgh efgh efgh efgh efgh efgh efgh efgh "
-                    + "efgh efgh efgh efgh efgh.", book.getAuthor());
+                + "efgh efgh efgh efgh efgh ", book.getAuthor());
         assertEquals(-28, book.getYear());
         assertEquals("80-205-0107-7", book.getIsbn());
         assertEquals(true, book.isLoan());
@@ -318,6 +337,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         try {
@@ -326,6 +347,8 @@ public class LibraryEntityTest {
             bookManager.updateBook(book);
             fail();
         } catch (IllegalArgumentException ex) {
+            //OK
+        } catch (EJBTransactionRolledbackException ex) {
             //OK
         }
 
@@ -336,6 +359,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         try {
@@ -345,6 +370,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         try {
@@ -353,6 +380,8 @@ public class LibraryEntityTest {
             bookManager.updateBook(book);
             fail();
         } catch (IllegalArgumentException ex) {
+            //OK
+        } catch (EJBTransactionRolledbackException ex) {
             //OK
         }
 
@@ -365,6 +394,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         try {
@@ -374,6 +405,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         try {
@@ -382,6 +415,8 @@ public class LibraryEntityTest {
             bookManager.updateBook(book);
             fail();
         } catch (IllegalArgumentException ex) {
+            //OK
+        } catch (EJBTransactionRolledbackException ex) {
             //OK
         }
 
@@ -393,6 +428,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         try {
@@ -401,6 +438,8 @@ public class LibraryEntityTest {
             bookManager.updateBook(book);
             fail();
         } catch (IllegalArgumentException ex) {
+            //OK
+        } catch (EJBTransactionRolledbackException ex) {
             //OK
         }
 
@@ -411,6 +450,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         try {
@@ -419,6 +460,8 @@ public class LibraryEntityTest {
             bookManager.updateBook(book);
             fail();
         } catch (IllegalArgumentException ex) {
+            //OK
+        } catch (EJBTransactionRolledbackException ex) {
             //OK
         }
 
@@ -429,6 +472,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         try {
@@ -438,6 +483,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         try {
@@ -446,6 +493,8 @@ public class LibraryEntityTest {
             bookManager.updateBook(book);
             fail();
         } catch (IllegalArgumentException ex) {
+            //OK
+        } catch (EJBTransactionRolledbackException ex) {
             //OK
         }
     }
@@ -478,6 +527,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         try {
@@ -486,6 +537,8 @@ public class LibraryEntityTest {
             fail();
         } catch (IllegalArgumentException ex) {
             //OK
+        } catch (EJBTransactionRolledbackException ex) {
+            //OK
         }
 
         try {
@@ -493,6 +546,8 @@ public class LibraryEntityTest {
             bookManager.removeBook(book);
             fail();
         } catch (IllegalArgumentException ex) {
+            //OK
+        } catch (EJBTransactionRolledbackException ex) {
             //OK
         }
 

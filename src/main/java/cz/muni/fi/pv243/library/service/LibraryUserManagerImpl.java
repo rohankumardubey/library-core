@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 /**
  *
@@ -62,8 +63,14 @@ public class LibraryUserManagerImpl implements LibraryUserManager {
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         }
-        return (LibraryUser) em.createQuery("SELECT l FROM LibraryUser l WHERE l.id=:id")
+        LibraryUser result = null;
+        try {
+            result = (LibraryUser) em.createQuery("SELECT l FROM LibraryUser l WHERE l.id=:id")
 				.setParameter("id", id).getSingleResult();
+        } catch (NoResultException e) {
+            //ok
+        }
+        return result;
     }
 
     private void checkUserInputParam(LibraryUser user) throws IllegalArgumentException {
