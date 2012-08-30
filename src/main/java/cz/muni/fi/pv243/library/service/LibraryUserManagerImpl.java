@@ -3,12 +3,14 @@
  * and open the template in the editor.
  */
 
-package cz.muni.fi.pv243.library.model.dao;
+package cz.muni.fi.pv243.library.service;
 
 import cz.muni.fi.pv243.library.model.LibraryUser;
 import java.util.List;
 import java.util.regex.Pattern;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
@@ -16,6 +18,8 @@ import javax.persistence.NoResultException;
  *
  * @author <a href="mailto:vramik at redhat.com">Vlastislav Ramik</a>
  */
+@Stateless
+@Named("LibraryUserManager")
 public class LibraryUserManagerImpl implements LibraryUserManager {
 
     @Inject
@@ -59,7 +63,7 @@ public class LibraryUserManagerImpl implements LibraryUserManager {
     }
 
     @Override
-    public LibraryUser getLibraryUserById(Long id) {
+    public LibraryUser getLibraryUserById(String id) {
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         }
@@ -67,6 +71,21 @@ public class LibraryUserManagerImpl implements LibraryUserManager {
         try {
             result = (LibraryUser) em.createQuery("SELECT l FROM LibraryUser l WHERE l.id=:id")
 				.setParameter("id", id).getSingleResult();
+        } catch (NoResultException e) {
+            //ok
+        }
+        return result;
+    }
+
+    @Override
+    public LibraryUser getLibraryUserByUsername(String username) {
+        if (username == null) {
+            throw new IllegalArgumentException("Username is null.");
+        }
+        LibraryUser result = null;
+        try {
+            result = (LibraryUser) em.createQuery("SELECT l FROM LibraryUser l WHERE l.username=:username")
+				.setParameter("username", username).getSingleResult();
         } catch (NoResultException e) {
             //ok
         }

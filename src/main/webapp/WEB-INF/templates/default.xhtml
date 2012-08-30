@@ -15,24 +15,27 @@
                 <div>
                     <h:panelGroup rendered="#{identity.loggedIn}">
                         <h:form>
-                            Logged in as #{identity.user.id} <h:commandButton action="#{identity.logout}" value="Logout"/>.
+                            Logged in as #{identity.user.username} <h:commandButton action="#{identity.logout}" value="Logout"/>.
                         </h:form>
                     </h:panelGroup>
                 </div>
-                <h:form>
-                    <h:panelGrid columns="2">
+                <h:form rendered="#{!identity.loggedIn}">
+                    <h:panelGrid columns="5">
                         <h:outputLabel value="Username" for="username"/>
                         <h:inputText id="username" value="#{credentials.username}" />
 
                         <h:outputLabel value="Password" for="password" />
                         <h:inputSecret id="password" value="#{credentials.password}"/>
+                        
+                        <h:commandButton action="#{identity.login}" value="Login" />
                     </h:panelGrid>
-                    <h:commandButton action="#{identity.login}" value="Login" />
 
                     <div>
-                        The default username/passwords: manager1/manager, manager2/manager, admin/admin
+                        The default username/passwords: admin/password, librarian/password, reader1/password, reader2/password
                     </div>
+                    <br />
                 </h:form>
+                <h:messages />
                 <ui:insert name="content">
                     [Template content will be inserted here]
                 </ui:insert>

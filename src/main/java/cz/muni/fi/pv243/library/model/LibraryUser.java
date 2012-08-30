@@ -6,19 +6,20 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.picketlink.idm.api.User;
 
 /**
  * @author <a href="mailto:vramik at redhat.com">Vlastislav Ramik</a>
  */
 @Entity
-public class LibraryUser implements Serializable {
+public class LibraryUser implements User, Serializable {
 
     private static final long serialVersionUID = -51311351812L;
-    
+
     public enum Role {
         ADMIN, LIBRARIAN, READER
     }
-            
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,14 +40,20 @@ public class LibraryUser implements Serializable {
     private String password;
     
     @NotNull
-    private Role UserRole;
+    private Role userRole;
     
-    public Long getId() {
-        return id;
+    @Override
+    public String getId() {
+        return id.toString();
+    }
+    
+    @Override
+    public String getKey() {
+        return getId();
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(String id) {
+        this.id = Long.parseLong(id);
     }
 
     public String getName() {
@@ -74,11 +81,11 @@ public class LibraryUser implements Serializable {
     }
 
     public Role getUserRole() {
-        return UserRole;
+        return userRole;
     }
 
-    public void setUserRole(Role UserRole) {
-        this.UserRole = UserRole;
+    public void setUserRole(Role userRole) {
+        this.userRole = userRole;
     }
 
     @Override
@@ -102,7 +109,7 @@ public class LibraryUser implements Serializable {
         if ((this.password == null) ? (other.password != null) : !this.password.equals(other.password)) {
             return false;
         }
-        if (this.UserRole != other.UserRole) {
+        if (this.userRole != other.userRole) {
             return false;
         }
         return true;
@@ -115,12 +122,12 @@ public class LibraryUser implements Serializable {
         hash = 97 * hash + (this.username != null ? this.username.hashCode() : 0);
         hash = 97 * hash + (this.name != null ? this.name.hashCode() : 0);
         hash = 97 * hash + (this.password != null ? this.password.hashCode() : 0);
-        hash = 97 * hash + (this.UserRole != null ? this.UserRole.hashCode() : 0);
+        hash = 97 * hash + (this.userRole != null ? this.userRole.hashCode() : 0);
         return hash;
     }
 
     @Override
     public String toString() {
-        return "LibraryUser{" + "id=" + id + ", username=" + username + ", name=" + name + ", password=" + password + ", UserRole=" + UserRole + '}';
+        return "LibraryUser{" + "id=" + id + ", username=" + username + ", name=" + name + ", password=" + password + ", UserRole=" + userRole + '}';
     }
 }

@@ -7,19 +7,6 @@
                 template="/WEB-INF/templates/default.xhtml">
 
     <ui:define name="content">
-        <h:button rendered="#{identity.user.userRole == 'LIBRARIAN'}" outcome="selectReader" value="Select Reader"/>
-        <h:link rendered="#{identity.user.userRole == 'ADMIN'}" outcome="readers" value="List Users"/>
-
-        <h:form>
-            <h:outputText value="Search: " />
-            <h:inputText value="#{LibraryManager.searchFieldValue}" />
-            <h:selectOneMenu id="som" value="#{LibraryManager.attributeType}">
-                <f:selectItem id="si1" itemLabel="Title" itemValue="TITLE" />
-                <f:selectItem id="si2" itemLabel="Author" itemValue="AUTHOR" />
-                <f:selectItem id="si3" itemLabel="ISBN" itemValue="ISBN" />
-            </h:selectOneMenu>
-            <h:commandButton value="Search" />
-        </h:form>
         <h:form>
             <h:dataTable value="#{books}" var="book" rendered="#{not empty books}">
                 <h:column rendered="#{identity.user.userRole == 'READER'}">
@@ -51,4 +38,3 @@
 
 </ui:define>
 </ui:composition>
-

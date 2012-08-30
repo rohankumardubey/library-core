@@ -3,15 +3,15 @@
  * and open the template in the editor.
  */
 
-package cz.muni.fi.pv243.library.model.dao;
+package cz.muni.fi.pv243.library.service;
 
 import cz.muni.fi.pv243.library.model.Book;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.ejb.Stateless;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;

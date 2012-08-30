@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.muni.fi.pv243.library.model.dao;
+package cz.muni.fi.pv243.library.service;
 
 import cz.muni.fi.pv243.library.model.LibraryUser;
 import java.util.List;
@@ -16,5 +16,6 @@ public interface LibraryUserManager {
     public void removeLibraryUser(LibraryUser user);
     public void updateLibraryUser(LibraryUser user);
     public List<LibraryUser> getAllLibraryUsers();
-    public LibraryUser getLibraryUserById(Long id);
+    public LibraryUser getLibraryUserById(String id);
+    public LibraryUser getLibraryUserByUsername(String username);
 }

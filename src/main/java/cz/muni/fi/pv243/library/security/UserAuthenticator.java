@@ -8,8 +8,10 @@ package cz.muni.fi.pv243.library.security;
 import cz.muni.fi.pv243.library.model.LibraryUser;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import org.jboss.seam.security.BaseAuthenticator;
 import org.jboss.seam.security.Credentials;
+import org.picketlink.idm.impl.api.PasswordCredential;
 
 /**
  *
@@ -25,10 +27,16 @@ public class UserAuthenticator extends BaseAuthenticator {
     
     @Override
     public void authenticate() {
-        //TODO
-//        LibraryUser user = em.createQuery("select m from Manager m where m.username = :username and m.password = :password")
-//         .setParameter("username", credentials.getUsername())
-//         .setParameter("password", ((PasswordCredential)credentials.getCredential()).getValue()).getSingleResult();
+        try {
+            final LibraryUser user = (LibraryUser) em.createQuery("select l from LibraryUser l where l.username = :username and l.password = :password")
+            .setParameter("username", credentials.getUsername())
+            .setParameter("password", ((PasswordCredential)credentials.getCredential()).getValue()).getSingleResult();
+            
+            setStatus(AuthenticationStatus.SUCCESS);
+            setUser(user);
+        } catch (NoResultException ex) {
+            setStatus(AuthenticationStatus.FAILURE);
+        }
     }
 
 }

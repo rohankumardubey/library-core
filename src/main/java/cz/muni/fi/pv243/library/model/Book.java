@@ -42,6 +42,7 @@ public class Book implements Serializable {
 //    private LibraryUser user;
     
     private boolean loan;
+    private boolean reserved;
 
     public String getAuthor() {
         return author;
@@ -89,6 +90,14 @@ public class Book implements Serializable {
 
     public void setLoan(boolean isLoan) {
         this.loan = isLoan;
+    }
+
+    public boolean isReserved() {
+        return reserved;
+    }
+
+    public void setReserved(boolean reserved) {
+        this.reserved = reserved;
     }
 
     @Override
