@@ -43,12 +43,11 @@
                 </h:column>
                 <h:column rendered="#{identity.user.userRole == 'LIBRARIAN'}">
                     <f:facet name="header">Command Buttons</f:facet>
-                    <h:commandButton
-            </h:column>
-        </h:dataTable>
-        <h:commandButton rendered="#{identity.user.userRole == 'READER'}" value="reserve" action="#{LibraryManager.reserve()}"/>
-    </h:form>
+                </h:column>
+            </h:dataTable>
+            <h:commandButton rendered="#{identity.user.userRole == 'READER'}" value="reserve" action="#{LibraryManager.reserve()}"/>
+        </h:form>
 
-</ui:define>
+    </ui:define>
 </ui:composition>
 

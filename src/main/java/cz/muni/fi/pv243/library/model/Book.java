@@ -29,7 +29,7 @@ public class Book implements Serializable {
     @Pattern(regexp = "[A-Ža-ž ]*", message = "Author must contain only characters and spaces")
     private String author;
     
-    @PastYear()
+    @PastYear
     @Column(name = "yearOfBook")
     private int year;
     
@@ -38,10 +38,13 @@ public class Book implements Serializable {
 //    @Pattern(regexp = "ISBN(?:-13)?:?\\x20*(?=.{17}$)97(?:8|9)([ -])\\d{1,5}\\1\\d{1,7}\\1\\d{1,6}\\1\\d$", message = "It has to be well-formed ISBN.")
     private String isbn;
     
-//    @OneToMany
-//    private LibraryUser user;
+    @ManyToOne
+    private LibraryUser user;
     
+    @Transient
     private boolean loan;
+    
+    @Transient
     private boolean reserved;
 
     public String getAuthor() {
@@ -100,6 +103,14 @@ public class Book implements Serializable {
         this.reserved = reserved;
     }
 
+    public LibraryUser getUser() {
+        return user;
+    }
+
+    public void setUser(LibraryUser user) {
+        this.user = user;
+    }
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
