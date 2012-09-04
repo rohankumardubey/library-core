@@ -32,56 +32,29 @@
         <navigation-case>
             <from-action>#{LibraryManager.selectReader()}</from-action>
             <if>#{true}</if>
-            <to-view-id>/booksToLoan.xhtml</to-view-id>
+            <to-view-id>/index.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
-<!--	<navigation-rule>
-		<from-view-id>/bakerylist.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>#{bakeryAction.edit}</from-action>
-			<if>#{true}</if>
-			<to-view-id>/edit.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-
-		<navigation-case>
-			<from-action>#{newBakeryAction.createBakery}</from-action>
-			<if>#{true}</if>
-			<to-view-id>/edit.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/edit.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>#{bakeryAction.save}</from-action>
-			<if>#{true}</if>
-			<to-view-id>/bakerylist.xhtml</to-view-id>
-		</navigation-case>
-
-		<navigation-case>
-			<from-action>#{bakeryAction.cancel}</from-action>
-			<if>#{true}</if>
-			<to-view-id>/bakerylist.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/register.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>#{registerAction.create}</from-action>
-			<if>#{true}</if>
-			<to-view-id>/index.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/view.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>#{currentBakeryProducer.setBakeryById(_storeid)}</from-action>
-			<if>#{currentBakeryProducer.bakery == null}</if>
-			<to-view-id>/denied.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>-->
-
+<!--    <navigation-rule>
+        <navigation-case>
+            <from-action>#{LibraryManager.loanBooks()}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <navigation-case>
+            <from-action>#{LibraryManager.unselectReader()}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>-->
+    <navigation-rule>
+        <from-view-id>/addEditBook.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{LibraryManager.updateBook()}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 </faces-config>

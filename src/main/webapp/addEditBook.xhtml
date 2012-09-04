@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:s="http://jboss.org/seam/faces"
+                template="/WEB-INF/templates/default.xhtml">
+
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewParam name="id" value="#{storedId}" />
+            <s:viewAction action="#{LibraryManager.loadBook(storedId)}" />
+        </f:metadata>
+        <h:form id="addEditForm">
+            <h:panelGrid columns="3">
+                <h:outputLabel for="title" value="Title: "/>
+                <h:inputText id="title" value="#{LibraryManager.book.title}" />
+                <h:message for="title" errorClass="invalid" />
+                
+                <h:outputLabel for="author" value="Author: "/>
+                <h:inputText id ="author" value="#{LibraryManager.book.author}" />
+                <h:message for="author" errorClass="invalid" />
+                
+                <h:outputLabel for="year" value="Year: "/>
+                <h:inputText id="year" value="#{LibraryManager.book.year}" />
+                <h:message for="year" errorClass="invalid" />
+                
+                <h:outputLabel for="isbn" value="ISBN: "/>
+                <h:inputText id="isbn" value="#{LibraryManager.book.isbn}" />
+                <h:message for="isbn" errorClass="invalid" />
+            </h:panelGrid>
+            <h:commandButton action="#{LibraryManager.addBook()}" value="Add" rendered="#{LibraryManager.book == null}"/>
+            <h:commandButton action="#{LibraryManager.updateBook()}" value="Edit" rendered="#{LibraryManager.book != null}" />
+            <h:button outcome="index" value="Back" />
+        </h:form>
+
+    </ui:define>
+</ui:composition>

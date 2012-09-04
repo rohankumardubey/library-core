@@ -22,10 +22,10 @@
                 <h:form rendered="#{!identity.loggedIn}">
                     <h:panelGrid columns="5">
                         <h:outputLabel value="Username" for="username"/>
-                        <h:inputText id="username" value="#{credentials.username}" />
+                        <h:inputText value="#{credentials.username}" />
 
                         <h:outputLabel value="Password" for="password" />
-                        <h:inputSecret id="password" value="#{credentials.password}"/>
+                        <h:inputSecret value="#{credentials.password}"/>
                         
                         <h:commandButton action="#{identity.login}" value="Login" />
                     </h:panelGrid>

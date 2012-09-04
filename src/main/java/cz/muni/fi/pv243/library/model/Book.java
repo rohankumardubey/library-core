@@ -39,14 +39,9 @@ public class Book implements Serializable {
     private String isbn;
     
     @ManyToOne
+    @JoinColumn(name="reader")
     private LibraryUser user;
     
-    @Transient
-    private boolean loan;
-    
-    @Transient
-    private boolean reserved;
-
     public String getAuthor() {
         return author;
     }
@@ -88,19 +83,7 @@ public class Book implements Serializable {
     }
     
     public boolean isLoan() {
-        return loan;
-    }
-
-    public void setLoan(boolean isLoan) {
-        this.loan = isLoan;
-    }
-
-    public boolean isReserved() {
-        return reserved;
-    }
-
-    public void setReserved(boolean reserved) {
-        this.reserved = reserved;
+        return user != null;
     }
 
     public LibraryUser getUser() {

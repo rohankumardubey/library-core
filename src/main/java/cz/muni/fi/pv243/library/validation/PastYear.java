@@ -20,7 +20,7 @@ import javax.validation.Payload;
 @Retention(RUNTIME)
 @Constraint(validatedBy = {PastYearValidator.class})
 public @interface PastYear {
-    String message() default "{javax.validation.constraints.Max.message}";
+    String message() default "Year cannot be in future.";
 
 	Class<?>[] groups() default { };
 

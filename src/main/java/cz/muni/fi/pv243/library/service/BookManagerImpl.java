@@ -11,14 +11,12 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.regex.Pattern;
 import javax.ejb.Stateless;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 /**
- *
  * @author <a href="mailto:vramik at redhat.com">Vlastislav Ramik</a>
  */
 @Stateless

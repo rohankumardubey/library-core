@@ -7,7 +7,13 @@
                 template="/WEB-INF/templates/default.xhtml">
 
     <ui:define name="content">
-        <h:button rendered="#{identity.user.userRole == 'LIBRARIAN'}" outcome="selectReader" value="Select Reader"/>
+        <h:button rendered="#{identity.user.userRole == 'LIBRARIAN' and LibraryManager.reader == null}" outcome="selectReader" value="Select Reader"/>
+        <h:form rendered="#{identity.user.userRole == 'LIBRARIAN' and LibraryManager.reader != null}">
+            <h:panelGrid columns="2">
+                <h:outputText value="Selected reader: #{LibraryManager.reader.username}" />
+                <h:commandButton action="#{LibraryManager.unselectReader()}" value="Unselect Reader"/>
+            </h:panelGrid>
+        </h:form>    
         <h:link rendered="#{identity.user.userRole == 'ADMIN'}" outcome="readers" value="List Users"/>
 
         <h:form>
@@ -20,10 +26,12 @@
             </h:selectOneMenu>
             <h:commandButton value="Search" />
         </h:form>
+        
         <h:form>
+            <h2>Catalog</h2>
             <h:dataTable value="#{books}" var="book" rendered="#{not empty books}">
-                <h:column rendered="#{identity.user.userRole == 'READER'}">
-                    <h:selectBooleanCheckbox disabled="#{book.reserved or book.loan}" value="#{LibraryManager.checked[book.id]}" />
+                <h:column rendered="#{identity.user.userRole == 'LIBRARIAN'}">
+                    <h:selectBooleanCheckbox disabled="#{book.loan}" value="#{LibraryManager.checkedToLoan[book.id]}" />
                 </h:column>
                 <h:column>
                     <f:facet name="header" >Title</f:facet>
@@ -43,11 +51,17 @@
                 </h:column>
                 <h:column rendered="#{identity.user.userRole == 'LIBRARIAN'}">
                     <f:facet name="header">Command Buttons</f:facet>
+                    <h:commandButton action="#{LibraryManager.returnBook(book)}" rendered="#{LibraryManager.checkedToLoan[book.id]}" value="Return Book" />
+                    <h:commandButton action="#{BookManager.removeBook(book)}" value="Remove" />
+                    <h:button outcome="addEditBook" value="Edit">
+                        <f:param name="id" value="#{book.id}" />
+                    </h:button>
                 </h:column>
             </h:dataTable>
-            <h:commandButton rendered="#{identity.user.userRole == 'READER'}" value="reserve" action="#{LibraryManager.reserve()}"/>
+            <h:commandButton rendered="#{identity.user.userRole == 'LIBRARIAN' and LibraryManager.reader != null}" value="loan books" action="#{LibraryManager.loanBooks()}"/>
+            <h:button rendered="#{identity.user.userRole == 'LIBRARIAN'}" outcome="addEditBook" value="Add Book" />
         </h:form>
-
+        
     </ui:define>
 </ui:composition>
 
