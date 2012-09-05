@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:s="http://jboss.org/seam/faces"
+                template="/WEB-INF/templates/default.xhtml">
+
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewParam name="id" value="#{storedId}" />
+            <s:viewAction action="#{LibraryManager.loadBook(storedId)}" />
+        </f:metadata>
+        <h:form>
+            <h:panelGrid columns="2">
+                <h:outputLabel for="username" value="Username: "/>
+                <h:inputText id="username" value="#{LibraryManager.book.user.username}" readonly="true"/>
+                                
+                <h:outputLabel for="name" value="Name: "/>
+                <h:inputText id ="name" value="#{LibraryManager.book.user.name}" readonly="true"/>
+                
+                <h:outputLabel for="userrole" value="Role: "/>
+                <h:inputText id="userrole" value="#{LibraryManager.book.user.userRole}" readonly="true"/>
+            </h:panelGrid>
+            <h:button outcome="index" value="Back" />
+        </h:form>
+
+    </ui:define>
+</ui:composition>

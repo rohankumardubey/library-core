@@ -35,26 +35,24 @@
             <to-view-id>/index.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
-<!--    <navigation-rule>
-        <navigation-case>
-            <from-action>#{LibraryManager.loanBooks()}</from-action>
-            <if>#{true}</if>
-            <to-view-id>/index.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>
-    <navigation-rule>
-        <navigation-case>
-            <from-action>#{LibraryManager.unselectReader()}</from-action>
-            <if>#{true}</if>
-            <to-view-id>/index.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>-->
     <navigation-rule>
         <from-view-id>/addEditBook.xhtml</from-view-id>
         <navigation-case>
             <from-action>#{LibraryManager.updateBook()}</from-action>
             <if>#{true}</if>
             <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{LibraryManager.updateBook()}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/index.xhtml</from-view-id>
+        <navigation-case>
+            <if>#{identity.user.userRole == 'ADMIN'}</if>
+            <to-view-id>/adminPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 </faces-config>

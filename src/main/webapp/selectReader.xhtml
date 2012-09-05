@@ -11,5 +11,6 @@
             <h:inputText id="username" value="#{LibraryManager.usernameOfReader}" />
             <h:commandButton value="OK" action="#{LibraryManager.selectReader()}" />
         </h:form>
+        <h:dataTable value="#{readers}" var="reader" rendered="#{not empty readers}">
     </ui:define>
 </ui:composition>

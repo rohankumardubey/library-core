@@ -13,7 +13,7 @@
                 <h:outputText value="Selected reader: #{LibraryManager.reader.username}" />
                 <h:commandButton action="#{LibraryManager.unselectReader()}" value="Unselect Reader"/>
             </h:panelGrid>
-        </h:form>    
+        </h:form>  
         <h:link rendered="#{identity.user.userRole == 'ADMIN'}" outcome="readers" value="List Users"/>
 
         <h:form>
@@ -25,16 +25,25 @@
                 <f:selectItem id="si3" itemLabel="ISBN" itemValue="ISBN" />
             </h:selectOneMenu>
             <h:commandButton value="Search" />
+            <h:commandButton value="Show All Books" action="#{LibraryManager.setSearchFieldValue('')}" />
         </h:form>
         
         <h:form>
             <h2>Catalog</h2>
             <h:dataTable value="#{books}" var="book" rendered="#{not empty books}">
-                <h:column rendered="#{identity.user.userRole == 'LIBRARIAN'}">
+                <h:column rendered="#{identity.user.userRole == 'LIBRARIAN' and LibraryManager.reader != null}">
+                    <f:facet name="header">Loan</f:facet> 
                     <h:selectBooleanCheckbox disabled="#{book.loan}" value="#{LibraryManager.checkedToLoan[book.id]}" />
                 </h:column>
+                <h:column rendered="#{LibraryManager.reader == null}">
+                    <f:facet name="header">Available</f:facet> 
+                    <h:outputText value="#{!book.loan}" rendered="#{identity.user.userRole != 'LIBRARIAN' or LibraryManager.reader != null or !book.loan}"/>
+                    <h:link outcome="readerDetail" value="#{!book.loan}" rendered="#{identity.user.userRole == 'LIBRARIAN' and LibraryManager.reader == null and book.loan}">
+                        <f:param name="id" value="#{book.id}" />
+                    </h:link>
+                </h:column>
                 <h:column>
-                    <f:facet name="header" >Title</f:facet>
+                    <f:facet name="header">Title</f:facet>
                     <h:outputText value="#{book.title}" />
                 </h:column>
                 <h:column>

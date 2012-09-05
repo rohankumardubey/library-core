@@ -14,11 +14,13 @@ import java.util.List;
 public interface LibraryManager {
 
     public enum BookAttributeType {
+
         TITLE, AUTHOR, ISBN;
     }
-    
+
     public List<Book> findBooksBy();
+
     public void loanBooks();
+
     public void returnBook(Book book);
-   
 }
