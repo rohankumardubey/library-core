@@ -31,6 +31,7 @@ public class LibraryManagerImpl implements LibraryManager {
     @Inject
     private FacesContext facesContext;
     
+    private List<Book> allBooksCache;
     private Map<Long, Boolean> checkedToLoan = new HashMap<Long, Boolean>();
     private String usernameOfReader;
     private String searchFieldValue;
