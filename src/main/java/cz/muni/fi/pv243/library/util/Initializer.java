@@ -7,6 +7,7 @@ package cz.muni.fi.pv243.library.util;
 
 import cz.muni.fi.pv243.library.model.Book;
 import cz.muni.fi.pv243.library.model.LibraryUser;
+import cz.muni.fi.pv243.library.model.LibraryUser.UserRole;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -27,16 +28,16 @@ public class Initializer {
     @PostConstruct
     public void initialize() {
         //initialize users
-        LibraryUser admin = newLibraryUser("admin", "password", "admin admin", LibraryUser.Role.ADMIN);
+        LibraryUser admin = newLibraryUser("admin", "password", "admin admin", UserRole.ADMIN);
         em.persist(admin);
         
-        LibraryUser librarian = newLibraryUser("librarian", "password", "librarian librarian", LibraryUser.Role.LIBRARIAN);
+        LibraryUser librarian = newLibraryUser("librarian", "password", "librarian librarian", UserRole.LIBRARIAN);
         em.persist(librarian);
 
-        LibraryUser reader1 = newLibraryUser("reader1", "password", "reader One", LibraryUser.Role.READER);
+        LibraryUser reader1 = newLibraryUser("reader1", "password", "reader One", UserRole.READER);
         em.persist(reader1);
 
-        LibraryUser reader2 = newLibraryUser("reader2", "password", "reader Two", LibraryUser.Role.READER);
+        LibraryUser reader2 = newLibraryUser("reader2", "password", "reader Two", UserRole.READER);
         em.persist(reader2);
         
         Book book1 = newBook("title1", "author one", 2000, "isbn");
@@ -49,7 +50,7 @@ public class Initializer {
         em.persist(book3);
     }
 
-    private LibraryUser newLibraryUser(String username, String password, String name, LibraryUser.Role userRole) {
+    private LibraryUser newLibraryUser(String username, String password, String name, UserRole userRole) {
         LibraryUser result = new LibraryUser();
         result.setUsername(username);
         result.setPassword(password);

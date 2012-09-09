@@ -31,6 +31,7 @@ public class LibraryUserManagerImpl implements LibraryUserManager {
         if (user.getId() != null) {
             throw new IllegalArgumentException("user has already set id");
         }
+        em.persist(user);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class LibraryUserManagerImpl implements LibraryUserManager {
 
     @Override
     public List<LibraryUser> getAllLibraryUsers() {
-        return em.createQuery("select l from LibraryUser l ORDER BY b.username ASC").getResultList();
+        return em.createQuery("select l from LibraryUser l ORDER BY l.username ASC").getResultList();
     }
 
     @Override
@@ -111,8 +112,8 @@ public class LibraryUserManagerImpl implements LibraryUserManager {
         if (user.getName().length() < 3 && user.getName().length() > 50) {
             throw new IllegalArgumentException("user's name has less than 3 or more than 50 charactersor");
         }
-        if (!Pattern.matches("[A-Ža-ž ]*", user.getUsername())) {
-            throw new IllegalArgumentException("user's username contains something else than characters and spaces.");
+        if (!Pattern.matches("[A-Ža-ž ]*", user.getName())) {
+            throw new IllegalArgumentException("user's name contains something else than characters and spaces.");
         }
         if (user.getPassword() == null) {
             throw new IllegalArgumentException("user's password is null");

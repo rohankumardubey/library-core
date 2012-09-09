@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:s="http://jboss.org/seam/faces"
+                template="/WEB-INF/templates/default.xhtml">
+
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewParam name="id" value="#{storedId}" />
+            <s:viewAction action="#{LibraryManager.loadReader(storedId)}" />
+        </f:metadata>
+        <h:form id="addEditForm">
+            <h:panelGrid columns="3">
+                <h:outputLabel for="username" value="Username: "/>
+                <h:inputText id="username" value="#{LibraryManager.editReader.username}" />
+                <h:message for="username" errorClass="invalid" />
+
+                <h:outputLabel for="name" value="Name: "/>
+                <h:inputText id ="name" value="#{LibraryManager.editReader.name}" />
+                <h:message for="name" errorClass="invalid" />
+
+                <h:outputLabel for="userRole" value="User role: "/>
+                <h:selectOneMenu id="userRole" value="#{LibraryManager.editReader.userRole}" >
+                    <f:selectItem id="si11" itemLabel="Admin" itemValue="ADMIN" />
+                    <f:selectItem id="si12" itemLabel="Librarian" itemValue="LIBRARIAN" />
+                    <f:selectItem id="si13" itemLabel="Reader" itemValue="READER" />
+                </h:selectOneMenu>
+                <h:message for="userRole" errorClass="invalid" />
+            </h:panelGrid>
+            <h:commandButton action="#{LibraryManager.addReader()}" value="Add" rendered="#{LibraryManager.editReader.username == null}"/>
+            <h:commandButton action="#{LibraryManager.updateReader()}" value="Edit" rendered="#{LibraryManager.editReader.username != null}" />
+            <h:button outcome="adminPage" value="Back" />
+        </h:form>
+
+    </ui:define>
+</ui:composition>

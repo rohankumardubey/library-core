@@ -5,6 +5,7 @@
 package cz.muni.fi.pv243.library.service;
 
 import cz.muni.fi.pv243.library.model.Book;
+import cz.muni.fi.pv243.library.model.LibraryUser;
 import java.util.List;
 
 /**
@@ -18,7 +19,14 @@ public interface LibraryManager {
         TITLE, AUTHOR, ISBN;
     }
 
-    public List<Book> findBooksBy();
+    public enum UserAttributeType {
+
+        USERNAME, NAME, USERROLE;
+    }
+
+    public List<Book> findBooks();
+    
+    public List<LibraryUser> findUsers();
 
     public void loanBooks();
 

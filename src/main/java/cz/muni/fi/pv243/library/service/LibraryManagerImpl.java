@@ -6,13 +6,12 @@ package cz.muni.fi.pv243.library.service;
 
 import cz.muni.fi.pv243.library.model.Book;
 import cz.muni.fi.pv243.library.model.LibraryUser;
+import cz.muni.fi.pv243.library.model.LibraryUser.UserRole;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -24,26 +23,30 @@ import javax.persistence.EntityManager;
 @ApplicationScoped
 @Named("LibraryManager")
 public class LibraryManagerImpl implements LibraryManager {
-    
+
     @Inject
     private EntityManager em;
     
-    @Inject
-    private FacesContext facesContext;
+//    @Inject
+//    private FacesContext facesContext;
     
     private List<Book> allBooksCache;
     private Map<Long, Boolean> checkedToLoan = new HashMap<Long, Boolean>();
     private String usernameOfReader;
-    private String searchFieldValue;
-    private String attributeType;
+    private String searchFieldBooks;
+    private String searchFieldUsers;
+    private String bookAttributeType;
+    private String userAttributeType;
+    private String userRoleType;
     private LibraryUser reader;
+    private LibraryUser editReader;
     private Book book;
     
     @Inject
     private BookManager bookManager;
     
     @Inject
-    private LibraryUserManager userManager;
+    private LibraryUserManager libraryUserManager;
 
     public Map<Long, Boolean> getCheckedToLoan() {
         return checkedToLoan;
@@ -61,20 +64,44 @@ public class LibraryManagerImpl implements LibraryManager {
         this.usernameOfReader = usernameOfReader;
     }
 
-    public String getSearchFieldValue() {
-        return searchFieldValue;
+    public String getSearchFieldBooks() {
+        return searchFieldBooks;
     }
 
-    public void setSearchFieldValue(String searchFieldValue) {
-        this.searchFieldValue = searchFieldValue;
+    public void setSearchFieldBooks(String searchFieldBooks) {
+        this.searchFieldBooks = searchFieldBooks;
     }
 
-    public String getAttributeType() {
-        return attributeType;
+    public String getSearchFieldUsers() {
+        return searchFieldUsers;
     }
 
-    public void setAttributeType(String attributeType) {
-        this.attributeType = attributeType;
+    public void setSearchFieldUsers(String searchFieldUsers) {
+        this.searchFieldUsers = searchFieldUsers;
+    }
+
+    public String getBookAttributeType() {
+        return bookAttributeType;
+    }
+
+    public void setBookAttributeType(String bookAttributeType) {
+        this.bookAttributeType = bookAttributeType;
+    }
+
+    public String getUserAttributeType() {
+        return userAttributeType;
+    }
+
+    public void setUserAttributeType(String userAttributeType) {
+        this.userAttributeType = userAttributeType;
+    }
+
+    public String getUserRoleType() {
+        return userRoleType;
+    }
+
+    public void setUserRoleType(String userRoleType) {
+        this.userRoleType = userRoleType;
     }
 
     public LibraryUser getReader() {
@@ -93,8 +120,16 @@ public class LibraryManagerImpl implements LibraryManager {
         this.book = book;
     }
 
+    public LibraryUser getEditReader() {
+        return editReader;
+    }
+
+    public void setEditReader(LibraryUser editReader) {
+        this.editReader = editReader;
+    }
+
     public void selectReader() {
-        reader = userManager.getLibraryUserByUsername(usernameOfReader);
+        reader = libraryUserManager.getLibraryUserByUsername(usernameOfReader);
         if (reader != null) {
             for (Book b : bookManager.getAllBooks()) {
                 if (reader.equals(b.getUser())) {
@@ -111,19 +146,36 @@ public class LibraryManagerImpl implements LibraryManager {
         reader = null;
         checkedToLoan.clear();
     }
-    
+
     @Produces
     @Named("books")
     @Override
-    public List<Book> findBooksBy() {
-        if (searchFieldValue == null || searchFieldValue.isEmpty()) {
+    public List<Book> findBooks() {
+        if (searchFieldBooks == null || searchFieldBooks.isEmpty()) {
             return bookManager.getAllBooks();
         }
-        BookAttributeType bookAttributeType = BookAttributeType.valueOf(attributeType);
-        return em.createQuery("SELECT b FROM Book b WHERE b." + bookAttributeType.toString().toLowerCase() + " LIKE :searchValue")
-                                  .setParameter("searchValue", "%" + searchFieldValue + "%").getResultList();
+        BookAttributeType attributeType = BookAttributeType.valueOf(bookAttributeType);
+        return em.createQuery("SELECT b FROM Book b WHERE b." + attributeType.toString().toLowerCase() + " LIKE :searchValue")
+                .setParameter("searchValue", "%" + searchFieldBooks + "%").getResultList();
     }
-    
+
+    @Produces
+    @Named("users")
+    @Override
+    public List<LibraryUser> findUsers() {
+        if ("USERROLE".equals(userAttributeType)) {
+            UserRole userRole = UserRole.valueOf(userRoleType);
+            return em.createQuery("SELECT l FROM LibraryUser l WHERE l.userRole=:userRole")
+                    .setParameter("userRole", userRole).getResultList();
+        }
+        if (searchFieldUsers == null || searchFieldUsers.isEmpty()) {
+            return libraryUserManager.getAllLibraryUsers();
+        }
+        UserAttributeType attributeType = UserAttributeType.valueOf(userAttributeType);
+        return em.createQuery("SELECT l FROM LibraryUser l WHERE l." + attributeType.toString().toLowerCase() + " LIKE :searchValue")
+                .setParameter("searchValue", "%" + searchFieldUsers + "%").getResultList();
+    }
+
     @Override
     public void loanBooks() {
         for (Long bookId : checkedToLoan.keySet()) {
@@ -141,7 +193,7 @@ public class LibraryManagerImpl implements LibraryManager {
         em.merge(book);
         checkedToLoan.put(book.getId(), false);
     }
-    
+
     public void loadBook(String bookId) {
         if (bookId != null) {
             book = bookManager.getBookById(Long.parseLong(bookId));
@@ -151,26 +203,32 @@ public class LibraryManagerImpl implements LibraryManager {
     }
     
     public void updateBook() {
-//        checkBookParameters();
         bookManager.updateBook(book);
         book = null;
     }
-    
+
     public void addBook() {
-//        checkBookParameters();
         bookManager.addBook(book);
         book = null;
     }
     
-    private void checkBookParameters() {
-        if (book.getTitle() == null || book.getTitle().isEmpty()) {
-            facesContext.addMessage("addEditForm:title", new FacesMessage("Title cannot be empty."));
-        }
-        if (book.getAuthor() == null || book.getAuthor().isEmpty()) {
-            facesContext.addMessage("addEditForm:author", new FacesMessage("Author cannot be empty."));
-        }
-        if (book.getIsbn() == null || book.getIsbn().isEmpty()) {
-            facesContext.addMessage("addEditForm:isbn", new FacesMessage("Isbn cannot be empty."));
+    public void loadReader(String readerId) {
+        if (readerId != null) {
+            editReader = libraryUserManager.getLibraryUserById(readerId);
+        } else {
+            editReader = new LibraryUser();
         }
     }
+    
+    public void updateReader() {
+        libraryUserManager.updateLibraryUser(editReader);
+        editReader = null;
+    }
+
+    public void addReader() {
+        editReader.setPassword("password");
+        libraryUserManager.addLibraryUser(editReader);
+        editReader = null;
+    }
+    
 }

@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/WEB-INF/templates/default.xhtml">
+
+    <ui:define name="content">
+        <h:form id="userSearch">
+            <h:outputText value="Search: " />
+            <h:inputText rendered="#{LibraryManager.userAttributeType != 'USERROLE'}" value="#{LibraryManager.searchFieldUsers}" />
+            <h:selectOneMenu rendered="#{LibraryManager.userAttributeType == 'USERROLE'}" value="#{LibraryManager.userRoleType}" >
+                <f:selectItem id="si11" itemLabel="Admin" itemValue="ADMIN" />
+                <f:selectItem id="si12" itemLabel="Librarian" itemValue="LIBRARIAN" />
+                <f:selectItem id="si13" itemLabel="Reader" itemValue="READER" />
+            </h:selectOneMenu>
+            <h:selectOneMenu id="som" value="#{LibraryManager.userAttributeType}" >
+                <f:selectItem id="si21" itemLabel="Username" itemValue="USERNAME" />
+                <f:selectItem id="si22" itemLabel="Name" itemValue="NAME" />
+                <f:selectItem id="si23" itemLabel="UserRole" itemValue="USERROLE" />
+                <f:ajax render="userSearch"/>
+            </h:selectOneMenu>
+            <h:commandButton value="Search" />
+            <h:commandButton value="Show All Users" action="#{LibraryManager.setSearchFieldUsers('')}" />
+        </h:form>
+        <h:form>
+            <h2>List of Users</h2>
+            <h:dataTable value="#{users}" var="user" rendered="#{not empty users}">
+                <h:column>
+                    <f:facet name="header">Username</f:facet>
+                    <h:outputText value="#{user.username}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Name</f:facet>
+                    <h:outputText value="#{user.name}" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Role</f:facet>
+                    <h:outputText value="#{user.userRole}" />
+<!--                    <h:selectOneMenu readonly="true" value="#user.userRole}" />-->
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Command Buttons</f:facet>
+                    <h:commandButton action="#{LibraryUserManager.removeLibraryUser(user)}" rendered="#{identity.user.id != user.id}" value="Remove" />
+                    <h:button outcome="addEditUser" value="Edit">
+                        <f:param name="id" value="#{user.id}" />
+                    </h:button>
+                </h:column>
+            </h:dataTable>
+            <h:button outcome="addEditUser" value="Add User" />
+            <h:button outcome="index" value="Back" />
+        </h:form>
+    </ui:define>
+</ui:composition>

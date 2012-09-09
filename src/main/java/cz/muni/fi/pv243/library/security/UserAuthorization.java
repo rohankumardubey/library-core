@@ -1,6 +1,7 @@
 package cz.muni.fi.pv243.library.security;
 
 import cz.muni.fi.pv243.library.model.LibraryUser;
+import cz.muni.fi.pv243.library.model.LibraryUser.UserRole;
 import java.io.Serializable;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.Secures;
@@ -19,7 +20,7 @@ public class UserAuthorization implements Serializable {
 		if (!identity.isLoggedIn()) {
 			return false;
 		}
-		return ((LibraryUser) identity.getUser()).getUserRole().equals(LibraryUser.Role.ADMIN);
+		return ((LibraryUser) identity.getUser()).getUserRole().equals(UserRole.ADMIN);
 	}
 
 	@Secures
@@ -28,7 +29,7 @@ public class UserAuthorization implements Serializable {
 		if (!identity.isLoggedIn()) {
 			return false;
 		}
-		return ((LibraryUser) identity.getUser()).getUserRole().equals(LibraryUser.Role.LIBRARIAN);
+		return ((LibraryUser) identity.getUser()).getUserRole().equals(UserRole.LIBRARIAN);
 	}
 
 	@Secures
@@ -37,6 +38,6 @@ public class UserAuthorization implements Serializable {
 		if (!identity.isLoggedIn()) {
 			return false;
 		}
-		return ((LibraryUser) identity.getUser()).getUserRole().equals(LibraryUser.Role.READER);
+		return ((LibraryUser) identity.getUser()).getUserRole().equals(UserRole.READER);
 	}
 }

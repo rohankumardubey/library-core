@@ -8,24 +8,24 @@
 
     <ui:define name="content">
         <h:button rendered="#{identity.user.userRole == 'LIBRARIAN' and LibraryManager.reader == null}" outcome="selectReader" value="Select Reader"/>
+        <h:button rendered="#{identity.user.userRole == 'ADMIN'}" outcome="adminPage" value="Manage"/>
         <h:form rendered="#{identity.user.userRole == 'LIBRARIAN' and LibraryManager.reader != null}">
             <h:panelGrid columns="2">
                 <h:outputText value="Selected reader: #{LibraryManager.reader.username}" />
                 <h:commandButton action="#{LibraryManager.unselectReader()}" value="Unselect Reader"/>
             </h:panelGrid>
         </h:form>  
-        <h:link rendered="#{identity.user.userRole == 'ADMIN'}" outcome="readers" value="List Users"/>
-
+        <br />
         <h:form>
             <h:outputText value="Search: " />
-            <h:inputText value="#{LibraryManager.searchFieldValue}" />
-            <h:selectOneMenu id="som" value="#{LibraryManager.attributeType}">
+            <h:inputText value="#{LibraryManager.searchFieldBooks}" />
+            <h:selectOneMenu id="som" value="#{LibraryManager.bookAttributeType}">
                 <f:selectItem id="si1" itemLabel="Title" itemValue="TITLE" />
                 <f:selectItem id="si2" itemLabel="Author" itemValue="AUTHOR" />
                 <f:selectItem id="si3" itemLabel="ISBN" itemValue="ISBN" />
             </h:selectOneMenu>
             <h:commandButton value="Search" />
-            <h:commandButton value="Show All Books" action="#{LibraryManager.setSearchFieldValue('')}" />
+            <h:commandButton value="Show All Books" action="#{LibraryManager.setSearchFieldBooks('')}" />
         </h:form>
         
         <h:form>

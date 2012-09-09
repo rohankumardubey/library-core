@@ -1,6 +1,7 @@
 package cz.muni.fi.pv243.library.model;
 
 import java.io.Serializable;
+import javax.inject.Named;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -12,17 +13,18 @@ import org.picketlink.idm.api.User;
  * @author <a href="mailto:vramik at redhat.com">Vlastislav Ramik</a>
  */
 @Entity
+@Named(value = "LibraryUser")
 public class LibraryUser implements User, Serializable {
 
     private static final long serialVersionUID = -51311351812L;
 
-    public enum Role {
+    public enum UserRole {
         ADMIN, LIBRARIAN, READER
     }
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(unique = true)
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters.")
@@ -40,11 +42,11 @@ public class LibraryUser implements User, Serializable {
     private String password;
     
     @NotNull
-    private Role userRole;
+    private UserRole userRole;
     
     @Override
     public String getId() {
-        return id.toString();
+        return id;
     }
     
     @Override
@@ -53,7 +55,7 @@ public class LibraryUser implements User, Serializable {
     }
 
     public void setId(String id) {
-        this.id = Long.parseLong(id);
+        this.id = id;
     }
 
     public String getName() {
@@ -80,11 +82,11 @@ public class LibraryUser implements User, Serializable {
         this.username = username;
     }
 
-    public Role getUserRole() {
+    public UserRole getUserRole() {
         return userRole;
     }
 
-    public void setUserRole(Role userRole) {
+    public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
     }
 

@@ -43,15 +43,21 @@
             <to-view-id>/index.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-action>#{LibraryManager.updateBook()}</from-action>
+            <from-action>#{LibraryManager.addBook()}</from-action>
             <if>#{true}</if>
             <to-view-id>/index.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <from-view-id>/index.xhtml</from-view-id>
+        <from-view-id>/addEditUser.xhtml</from-view-id>
         <navigation-case>
-            <if>#{identity.user.userRole == 'ADMIN'}</if>
+            <from-action>#{LibraryManager.updateReader()}</from-action>
+            <if>#{true}</if>
+            <to-view-id>/adminPage.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{LibraryManager.addReader()}</from-action>
+            <if>#{true}</if>
             <to-view-id>/adminPage.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>

@@ -30,8 +30,8 @@
                 <h:inputText id="isbn" value="#{LibraryManager.book.isbn}" />
                 <h:message for="isbn" errorClass="invalid" />
             </h:panelGrid>
-            <h:commandButton action="#{LibraryManager.addBook()}" value="Add" rendered="#{LibraryManager.book == null}"/>
-            <h:commandButton action="#{LibraryManager.updateBook()}" value="Edit" rendered="#{LibraryManager.book != null}" />
+            <h:commandButton action="#{LibraryManager.addBook()}" value="Add" rendered="#{LibraryManager.book.title == null}"/>
+            <h:commandButton action="#{LibraryManager.updateBook()}" value="Edit" rendered="#{LibraryManager.book.title != null}" />
             <h:button outcome="index" value="Back" />
         </h:form>
 
