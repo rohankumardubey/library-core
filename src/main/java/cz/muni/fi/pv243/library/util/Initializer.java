@@ -40,13 +40,13 @@ public class Initializer {
         LibraryUser reader2 = newLibraryUser("reader2", "password", "reader Two", UserRole.READER);
         em.persist(reader2);
         
-        Book book1 = newBook("title1", "author one", 2000, "isbn");
+        Book book1 = newBook("title1", "author one", 2000, "978-80-7203-884-8");
         em.persist(book1);
         
-        Book book2 = newBook("title2", "author two", 2001, "isbn");
+        Book book2 = newBook("title2", "author two", 2001, "978-80-7203-884-8");
         em.persist(book2);
         
-        Book book3 = newBook("title3", "author three", 2000, "isbn");
+        Book book3 = newBook("title3", "author three", 2000, "978-80-7203-884-8");
         em.persist(book3);
     }
 

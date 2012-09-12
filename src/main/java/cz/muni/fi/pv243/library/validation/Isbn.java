@@ -9,7 +9,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * The year must be a number whose value must be lower or equal to this year.
+ * It has to be valid ISBN-13 format.
  * 
  * <code>null</code> elements are considered valid
  * 
@@ -18,9 +18,9 @@ import javax.validation.Payload;
 @Documented
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
 @Retention(RUNTIME)
-@Constraint(validatedBy = {PastYearValidator.class})
-public @interface PastYear {
-    String message() default "Year cannot be in future.";
+@Constraint(validatedBy = {IsbnValidator.class})
+public @interface Isbn {
+    String message() default "Isbn has to be valid ISBN-13 format.";
 
 	Class<?>[] groups() default { };
 
@@ -33,6 +33,6 @@ public @interface PastYear {
 	@Retention(RUNTIME)
 	@Documented
 	@interface List {
-		PastYear[] value();
+		Isbn[] value();
 	}
 }

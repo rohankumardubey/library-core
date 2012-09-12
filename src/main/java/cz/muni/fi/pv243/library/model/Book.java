@@ -1,5 +1,6 @@
 package cz.muni.fi.pv243.library.model;
 
+import cz.muni.fi.pv243.library.validation.Isbn;
 import cz.muni.fi.pv243.library.validation.PastYear;
 import java.io.Serializable;
 import javax.persistence.*;
@@ -35,7 +36,7 @@ public class Book implements Serializable {
     
     @Column
     @NotEmpty
-//    @Pattern(regexp = "ISBN(?:-13)?:?\\x20*(?=.{17}$)97(?:8|9)([ -])\\d{1,5}\\1\\d{1,7}\\1\\d{1,6}\\1\\d$", message = "It has to be well-formed ISBN.")
+    @Isbn
     private String isbn;
     
     @ManyToOne
